@@ -1,0 +1,19 @@
+:host {
+    border-radius: 10px;
+    border: 1px solid #6C7FF9;
+    padding: 20px 25px; // TODO: replace 2rem 2.5rem
+    display: flex;
+    flex-direction: column;
+    gap: 10px; // TODO: replace with 1rem
+
+    & p {
+        margin: 0;
+    }
+
+    & .badge {
+        border-radius: 999px;
+        background-color: #C6C6C6;
+        height: 19px;
+        width: 82px;
+    }
+}

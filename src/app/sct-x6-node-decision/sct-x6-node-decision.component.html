@@ -1,0 +1,8 @@
+<ng-container *ngIf="!isEditMode">
+    <p>{{ data?.text }}</p>
+    <div class="badge">{{ data?.date | pipe: 'dd/MM/yy'}}</div>
+    <div class="actions"><div>
+</ng-container>
+<ng-container *ngIf="isEditMode">
+    <textarea name="" id="" cols="30" rows="10"><textarea>
+</ng-container>

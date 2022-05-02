@@ -1,89 +1,66 @@
-import { Component, OnInit } from '@angular/core';
-import { Addon, Graph, Markup, Shape } from '@antv/x6';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Graph, Node } from '@antv/x6';
 import '@antv/x6-angular-shape'
-import { createElement } from '@antv/x6/lib/util/dom/elem';
+import { Stencil } from '@antv/x6/lib/addon';
+import X6Utils from 'src/X6Utils/x6Utils';
 
 @Component({
   selector: 'app-desicion-diagram',
   templateUrl: './desicion-diagram.component.html',
   styleUrls: ['./desicion-diagram.component.scss']
 })
-export class DesicionDiagramComponent implements OnInit {
+export class DesicionDiagramComponent implements OnInit, AfterViewInit {
+  @ViewChild('stencilContainer', {read: ElementRef}) stencilContainer!: ElementRef;
+  @ViewChild('graphContainer', {read: ElementRef}) graphContainer!: ElementRef;
 
-  constructor() { }
+  constructor() { 
+    
+  }
+  
+  graph!: Graph;
+  stencil!: Stencil;
 
-  graph: any;
-  stencil: any;
-
-  ports: any;
   labelText: string = 'Lorem ipsum dolor sit amet akjnsdadaadsasda.';
 
-  ngOnInit(): void {
-    this.desicion();
+  ngOnInit(): void{
+
   }
 
-  desicion(){
-    this.createGraph()
-    this.createStencil()
-    
-    const r1 = this.graph.createNode({
-      shape: 'html',
-      x: 120,
-      y: 80,
-      width: 260,
-      height: 112,
-      data: 1,
-      attrs: {
-        body: {
-          rx: 10,
-          ry: 10,
-        },
-      },
-      ports: { ...this.portConfig(6, 2) },
-      html: () => {
-        const wrap = document.createElement('div')
-        const text = document.createElement('textarea')
-        const date = document.createElement('div')
-        const dateText = document.createElement('span')
-        const options = this.addOptionMenu();
-        options.className = "options"
-        dateText.className = "dateText"
-        date.className = "date"
-        wrap.className = "graph"
-        text.className = 'text'
-        text.innerText = this.labelText
-        dateText.innerText = '13-02-01'
-        date.appendChild(dateText)
-        wrap.appendChild(options)
-        wrap.appendChild(text)
-        wrap.appendChild(date)
-        return wrap
-      },
-    })
+  ngAfterViewInit(): void {
+    this._createGraph();
+    this._registerNodes();
+    this._registerEdge();
+    this._createSidebar();
+    this._addSidebarNodes();
+    this._addSidebarToDOM();
+    this._addEvents(this.graph as Graph);
+  }
 
-    this.stencil.load([r1], 'group1')
+  private _createGraph(): void {
+    console.log(this.graphContainer);
+    this.graph = X6Utils.createGraph(this.graphContainer.nativeElement)
+  }
 
-    const d1 = this.graph.createNode({
-        shape: 'path',
-        x: 500,
-        y: 300,
-        width: 38,
-        height: 46,
-        attrs: {
-          body: {
-            cursor: 'pointer',
-            stroke: 'none',
-            fill: '#6C7FF9',
-            rx: 10,
-            ry: 10,
-          },
-        },
-        path: 'M1.85277 25.6958C0.472994 23.8996 0.472995 21.4002 1.85277 19.604L15.2511 2.16189C17.2526 -0.443592 21.18 -0.44359 23.1815 2.16189L36.5798 19.604C37.9596 21.4002 37.9596 23.8996 36.5798 25.6958L23.1815 43.1379C21.18 45.7434 17.2526 45.7434 15.2511 43.1379L1.85277 25.6958Z',
-        ports: { ...this.portConfig(4, 1) },
-    })
+  private _registerNodes(): void {
+    this.graph!.createNode(this._nodeFeatures());
+    this.graph!.createNode(this._connectorFeatures());
+  }
 
-    this.stencil.load([d1], 'group2')
+  private _createSidebar(): void {
+    this.stencil = X6Utils.createStencil(this.graph as Graph)
+  }
 
+  private _addSidebarToDOM(): void {
+    this.stencilContainer.nativeElement.appendChild(this.stencil.container)
+  }
+
+  private _addSidebarNodes(): void {
+    const nodes = this.graph.;
+    console.log(nodes);
+    this.stencil.load([nodes]);
+  }
+
+  private _registerEdge(): void{
     Graph.registerEdge(
       'custom-edge-label',
       {
@@ -132,11 +109,67 @@ export class DesicionDiagramComponent implements OnInit {
       },
       true,
     )
-
-    this.addEvents(this.graph);
   }
 
-  addOptionMenu(){
+  private _nodeFeatures(): any {
+    return {
+      shape: 'html',
+      x: 120,
+      y: 80,
+      width: 260,
+      height: 112,
+      data: 1,
+      attrs: {
+        body: {
+          rx: 10,
+          ry: 10,
+        },
+      },
+      ports: { ...this._portConfig(6, 2) },
+      html: () => {
+        const wrap = document.createElement('div')
+        const text = document.createElement('textarea')
+        const date = document.createElement('div')
+        const dateText = document.createElement('span')
+        const options = this._addOptionMenu();
+        options.className = "options"
+        dateText.className = "dateText"
+        date.className = "date"
+        wrap.className = "graph"
+        text.className = 'text'
+        text.innerText = this.labelText
+        dateText.innerText = '13-02-01'
+        date.appendChild(dateText)
+        wrap.appendChild(options)
+        wrap.appendChild(text)
+        wrap.appendChild(date)
+        return wrap
+      },
+    }
+  }
+
+  private _connectorFeatures(): any {
+    return {
+      shape: 'path',
+      x: 500,
+      y: 300,
+      width: 38,
+      height: 46,
+      attrs: {
+        body: {
+          cursor: 'pointer',
+          stroke: 'none',
+          fill: '#6C7FF9',
+          rx: 10,
+          ry: 10,
+        },
+      },
+      path: 'M1.85277 25.6958C0.472994 23.8996 0.472995 21.4002 1.85277 19.604L15.2511 2.16189C17.2526 -0.443592 21.18 -0.44359 23.1815 2.16189L36.5798 19.604C37.9596 21.4002 37.9596 23.8996 36.5798 25.6958L23.1815 43.1379C21.18 45.7434 17.2526 45.7434 15.2511 43.1379L1.85277 25.6958Z',
+      ports: { ...this._portConfig(4, 1) },
+    }
+  }
+
+  private _addOptionMenu() {
     const options = document.createElement('div');
     const threeDots = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
     const path = document.createElementNS("http://www.w3.org/2000/svg", 'path');
@@ -149,7 +182,7 @@ export class DesicionDiagramComponent implements OnInit {
     return options;
   }
 
-  addEvents(graph: Graph){
+  private _addEvents(graph: Graph){
     const showPorts = (ports: NodeListOf<SVGElement>, show: boolean) => {
       for (let i = 0, len = ports.length; i < len; i = i + 1) {
         ports[i].style.visibility = show ? 'visible' : 'hidden'
@@ -204,197 +237,13 @@ export class DesicionDiagramComponent implements OnInit {
     })
   }
 
-  createGraph(){
-    this.graph = new Graph({
-      container: document.getElementById('container')!,
-      grid: false,
-      onEdgeLabelRendered: (args) => {
-        const { label, selectors } = args
-        const content = selectors.foContent as HTMLDivElement
-        if (content) {
-          const arrowLabel = document.createElement('textarea')
-          arrowLabel.className = 'arrowLabel'
-          arrowLabel.placeholder = 'Type something'
-          arrowLabel.maxLength = 30
-          content.appendChild(arrowLabel)
-        }
-      },
-      connecting: {
-        router: {
-          name: 'manhattan',
-          args: {
-            padding: 10,
-          },
-        },
-        connector: {
-          name: 'rounded',
-          args: {
-            radius: 20,
-          },
-        },
-        anchor: 'center',
-        connectionPoint: 'anchor',
-        allowBlank: false,
-        snap: {
-          radius: 30,
-        },
-        createEdge() {
-          return new Shape.Edge({
-            shape:'custom-edge-label',
-            defaultLabel: {
-              markup: Markup.getForeignObjectMarkup(),
-              attrs: {
-                fo: {
-                  width: 130,
-                  height: 50,
-                  x: -70,
-                  y: -25,
-                },
-              },
-            },
-            label: {
-              position: 0.5,
-            },
-            attrs: {
-              line: {
-                stroke: '#6C7FF9',
-                sourceMarker: {
-                  tagName: 'none',
-                },
-                targetMarker: {
-                  tagName: 'none',
-                }
-              },
-            },
-            zIndex: 0,
-          })
-        },
-        validateConnection({ targetMagnet }) {
-          return !!targetMagnet
-        },
-      },
-      highlighting: {
-        magnetAdsorbed: {
-          name: 'stroke',
-          args: {
-            attrs: {
-              fill: '#5F95FF',
-              stroke: '#5F95FF',
-            },
-          },
-        },
-      },
-      snapline: true,
-      keyboard: true,
-      clipboard: true,
-    })
-  } 
-
-  createStencil(){
-    const container = document.getElementById('container')!
-    const stencilContainer = document.createElement('div')
-    stencilContainer.id = 'stencil'
-    const graphContainer = document.createElement('div')
-    graphContainer.id = 'graph-container'
-    container.appendChild(stencilContainer)
-    container.appendChild(graphContainer)
-    this.stencil = new Addon.Stencil({
-      title: '',
-      target: this.graph,
-      stencilGraphWidth: 300,
-      stencilGraphHeight: 180,
-      collapsable: true,
-      groups: [
-        {
-          title: 'Diagram',
-          name: 'group1',
-          graphHeight: 150,
-          layoutOptions: {
-            rowHeight: 120,
-          },
-        },
-        {
-          title: 'Node',
-          name: 'group2',
-          graphHeight: 250,
-          layoutOptions: {
-            rowHeight: 100,
-          },
-        },
-      ],
-      layoutOptions: {
-        columns: 2,
-        columnWidth: 300,
-        rowHeight: 50,
-      },
-    })
-    document.getElementById('container')!.appendChild(this.stencil.container)
-    // #endregion
-  }
-
-  portConfig(size: number, strokeWidth: number){
-    return this.ports = {
+  private _portConfig(size: number, strokeWidth: number){
+    return {
       groups: {
-        top: {
-          position: 'top',
-          attrs: {
-            circle: {
-              r: size,
-              magnet: true,
-              stroke: '#6C7FF9',
-              strokeWidth: strokeWidth,
-              fill: '#fff',
-              style: {
-                visibility: 'hidden',
-              },
-            },
-          },
-        },
-        right: {
-          position: 'right',
-          attrs: {
-            circle: {
-              r: size,
-              magnet: true,
-              stroke: '#6C7FF9',
-              strokeWidth: strokeWidth,
-              fill: '#fff',
-              style: {
-                visibility: 'hidden',
-              },
-            },
-          },
-        },
-        bottom: {
-          position: 'bottom',
-          attrs: {
-            circle: {
-              r: size,
-              magnet: true,
-              stroke: '#6C7FF9',
-              strokeWidth: strokeWidth,
-              fill: '#fff',
-              style: {
-                visibility: 'hidden',
-              },
-            },
-          },
-        },
-        left: {
-          position: 'left',
-          attrs: {
-            circle: {
-              r: size,
-              magnet: true,
-              stroke: '#6C7FF9',
-              strokeWidth: strokeWidth,
-              fill: '#fff',
-              style: {
-                visibility: 'hidden',
-              },
-            },
-          },
-        },
+        top: { ...this._portFeatures('top', size, strokeWidth) },
+        right: { ...this._portFeatures('right', size, strokeWidth) },
+        bottom: { ...this._portFeatures('bottom', size, strokeWidth) },
+        left: { ...this._portFeatures('left', size, strokeWidth) },
       },
       items: [
         {
@@ -410,6 +259,24 @@ export class DesicionDiagramComponent implements OnInit {
           group: 'left',
         },
       ],
+    }
+  }
+
+  private _portFeatures(position: string, size: number, strokeWidth: number){
+    return {
+      position: position,
+      attrs: {
+        circle: {
+          r: size,
+          magnet: true,
+          stroke: '#6C7FF9',
+          strokeWidth: strokeWidth,
+          fill: '#fff',
+          style: {
+            visibility: 'hidden',
+          },
+        },
+      },
     }
   }
 }
