@@ -1,8 +1,18 @@
-<ng-container *ngIf="!isEditMode">
+<ng-container>
+<!-- <ng-container *ngIf="!isEditMode"> -->
+    <!-- <div class="actions">
+        <i class="fa-solid fa-ellipsis"></i>
+    </div>
+    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing.</p>
     <p>{{ data?.text }}</p>
-    <div class="badge">{{ data?.date | pipe: 'dd/MM/yy'}}</div>
-    <div class="actions"><div>
+    <div class="badge">13.02.22</div> -->
+    <!-- <div class="badge">{{ data?.date | pipe: 'dd/MM/yy'}}</div> -->
 </ng-container>
-<ng-container *ngIf="isEditMode">
-    <textarea name="" id="" cols="30" rows="10"><textarea>
+<!-- <ng-container *ngIf="isEditMode"> -->
+<ng-container>
+    <div class="actions">
+        <i class="fa-solid fa-ellipsis"></i>
+    </div>
+    <textarea placeholder="Type something" name="decisionText" id="decision" cols="30" rows="10"></textarea>
+    <div class="badge">13.02.22</div>
 </ng-container>

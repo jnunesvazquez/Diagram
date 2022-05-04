@@ -10,7 +10,7 @@ import { SctX6NodeDecisionComponent } from './sct-x6-node-decision/sct-x6-node-d
   declarations: [
     AppComponent,
     DesicionDiagramComponent,
-    SctX6NodeDecisionComponent
+    SctX6NodeDecisionComponent,
   ],
   imports: [
     BrowserModule,

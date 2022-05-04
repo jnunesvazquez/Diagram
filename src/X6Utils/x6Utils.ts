@@ -6,14 +6,16 @@ export default class X6Utils {
       container: container,
       grid: false,
       onEdgeLabelRendered: (args) => {
-        const { selectors } = args
-        const content = selectors.foContent as HTMLDivElement
-        if (content) {
-          const arrowLabel = document.createElement('textarea')
-          arrowLabel.className = 'arrowLabel'
-          arrowLabel.placeholder = 'Type something'
-          arrowLabel.maxLength = 30
-          content.appendChild(arrowLabel)
+        const { edge, selectors } = args
+        if(edge.getSourceCell()?.shape === "path"){
+          const content = selectors.foContent as HTMLDivElement
+          if (content) {
+            const arrowLabel = document.createElement('textarea')
+            arrowLabel.className = 'arrowLabel'
+            arrowLabel.placeholder = 'Type something'
+            arrowLabel.maxLength = 30
+            content.appendChild(arrowLabel)
+          }
         }
       },
       connecting: {
@@ -88,13 +90,11 @@ export default class X6Utils {
   }
 
   public static createStencil(graph: Graph) {
-    // debugger;
-    // this._stencilSetUp(graph);
     return new Addon.Stencil({
       title: '',
       target: graph,
       stencilGraphWidth: 300,
-      stencilGraphHeight: 180,
+      stencilGraphHeight: 200,
       collapsable: true,
       groups: [
         {
@@ -116,19 +116,9 @@ export default class X6Utils {
       ],
       layoutOptions: {
         columns: 2,
-        columnWidth: 300,
+        columnWidth: 290,
         rowHeight: 50,
       },
     })
   }
-
-  // private static _stencilSetUp(graph: Graph): void {
-  //   const container = graph.container;
-  //   const stencilContainer = document.createElement('div')
-  //   stencilContainer.id = 'stencil'
-  //   const graphContainer = document.createElement('div')
-  //   graphContainer.id = 'graph-container'
-  //   container.appendChild(stencilContainer)
-  //   container.appendChild(graphContainer)
-  // }
 }

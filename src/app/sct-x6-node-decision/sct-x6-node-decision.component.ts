@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-sct-x6-node-decision',
@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sct-x6-node-decision.component.scss']
 })
 export class SctX6NodeDecisionComponent implements OnInit {
+  @Input() data: string | undefined;
 
   constructor() { }
 
