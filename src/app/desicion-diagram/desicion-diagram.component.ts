@@ -1,6 +1,6 @@
 import { Injector } from '@angular/core';
 import { AfterViewInit, Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { EdgeView, Graph, Node } from '@antv/x6';
+import { Graph, Node } from '@antv/x6';
 import '@antv/x6-angular-shape'
 import { Stencil } from '@antv/x6/lib/addon';
 import X6Utils from 'src/X6Utils/x6Utils';
@@ -163,6 +163,9 @@ export class DesicionDiagramComponent implements OnInit, AfterViewInit {
         ports[i].style.visibility = show ? 'visible' : 'hidden'
         if (ports[i].hasAttribute("id")){
           ports[i].style.visibility = 'visible'
+        }
+        if (ports[i].hasAttribute("id") && node.shape == 'path'){
+          ports[i].style.visibility = 'hidden'
         }
       };
     }
